@@ -1,0 +1,62 @@
+#!/bin/bash
+##定时任务##*/10 * * * * ( sh /opt/netstat_check >>/opt/netstat_check.log )
+start_day=`date -d "0day" +%Y%m%d-%H:%M:%S`
+ht=`hostname`
+all=`netstat|wc -l`
+#进程数监控
+proce1=$(ps -ef|grep mongodb-3.4|grep -v grep|wc -l)
+num=3
+ty="OK"
+if [ "$proce1" -eq "$num" ] ; then 
+ty=`echo "OK"`
+else
+ty=`echo "Bad"`
+fi
+#echo "--分片连接数"
+#分片连接数输出准备
+s1=`netstat -an | grep 27001 | grep ESTABLISHED | wc -l`
+s2=`netstat -an | grep 27002 | grep ESTABLISHED | wc -l`
+s3=`netstat -an | grep 27003 | grep ESTABLISHED | wc -l`
+s4=`netstat -an | grep 27004 | grep ESTABLISHED | wc -l`
+s5=`netstat -an | grep 27005 | grep ESTABLISHED | wc -l`
+s6=`netstat -an | grep 27006 | grep ESTABLISHED | wc -l`
+s7=`netstat -an | grep 27007 | grep ESTABLISHED | wc -l`
+s8=`netstat -an | grep 27008 | grep ESTABLISHED | wc -l`
+s9=`netstat -an | grep 27009 | grep ESTABLISHED | wc -l`
+s10=`netstat -an | grep 27010 | grep ESTABLISHED | wc -l`
+#连接数阀值判断
+chk=1700
+#format export
+echo $start_day $ht "("$ty")""MongoProcess" $num"="$proce1 "netstat" $all"|"$s1"|"$s2"|"$s3"|"$s4"|"$s5"|"$s6"|"$s7"|"$s8"|"$s9"|"$s10
+#判断分片连接数超过1700就统一输出日志
+if [ "$s1" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片01连接数:"$s1 >> /opt/netstat_max.log
+fi
+if [ "$s2" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片02连接数:"$s2 >> /opt/netstat_max.log
+fi
+if [ "$s3" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片03连接数:"$s3 >> /opt/netstat_max.log
+fi
+if [ "$s4" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片04连接数:"$s4 >> /opt/netstat_max.log
+fi
+if [ "$s5" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片05连接数:"$s5 >> /opt/netstat_max.log
+fi
+if [ "$s6" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片06连接数:"$s6 >> /opt/netstat_max.log
+fi
+if [ "$s7" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片07连接数:"$s7 >> /opt/netstat_max.log
+fi
+if [ "$s8" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片08连接数:"$s8 >> /opt/netstat_max.log
+fi
+if [ "$s9" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片09连接数:"$s9 >> /opt/netstat_max.log
+fi
+if [ "$s10" -gt "$chk" ] ; then
+echo $start_day "主机:"$ht "分片10连接数:"$s10 >> /opt/netstat_max.log
+fi
+exit
