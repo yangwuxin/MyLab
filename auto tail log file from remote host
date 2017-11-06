@@ -1,0 +1,44 @@
+#(1.list remote host)#iplist
+192.168.*.*
+192.168.*.*
+192.168.*.*
+192.168.*.*
+192.168.*.*
+192.168.*.*
+192.168.*.*
+192.168.*.*
+192.168.*.*
+192.168.*.*
+
+
+#!/bin/sh
+#(2.execute this script)#check.sh
+file=$1
+command=$2
+echo "自动查询每个节点监控日志。"
+#echo $file
+#echo $command
+for i in `cat $file`
+do
+    ./ssh.sh $i "$command"
+done
+
+#!/usr/bin/expect
+#(3.expect shell auto input)#ssh.sh
+set ip [lindex $argv 0]
+set command [lindex $argv 1]
+set timeout 30
+spawn ssh vivoadmin@$ip
+expect "vivoadmin@"
+send "O03tOEu.vLDi\r"
+#expect "#"
+#send "cd /opt/\r"
+expect "#"
+send "$command\r"
+expect "#"
+send "exit\r"
+expect eof
+exit
+
+#(4.commant line execute)#
+sh check.sh iplist "tail /opt/netstat_check.log"
