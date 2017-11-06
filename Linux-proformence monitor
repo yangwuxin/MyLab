@@ -1,0 +1,14 @@
+#!/bin/bash
+#系统性能监控脚本，通过crontab调度并输出到日志。
+start_day=`date -d "0day" +%Y%m%d-%H:%M:%S`
+#echo "--"$start_day"--"
+#echo "内存缓存大小"
+#free -h
+#抓取当前系统15分钟的平均负载值  
+load_15=`uptime | awk '{print $NF}'`
+echo $start_day "15min平均系统负载="$load_15
+#echo "top查看CPU运行情况"
+#top -b -n 1 | grep Cpu
+#服务器的CPU使用率，内存使用，虚拟内存交换情况,IO读写情况
+vmstat 2 3
+exit
